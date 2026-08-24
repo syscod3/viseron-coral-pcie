@@ -12,7 +12,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # udev rules for Coral PCIe devices
-RUN echo 'SUBSYSTEM=="pci", ATTR{vendor}=="0x1ac1", ATTR{device}=="0x089a", MODE="0660", GROUP="video"' > /etc/udev/rules.d/99-coral-pcie.rules
+RUN mkdir -p /etc/udev/rules.d && \
+    echo 'SUBSYSTEM=="pci", ATTR{vendor}=="0x1ac1", ATTR{device}=="0x089a", MODE="0660", GROUP="video"' > /etc/udev/rules.d/99-coral-pcie.rules
 
 # Label the image
 LABEL org.opencontainers.image.title="Viseron with PCIe Coral EdgeTPU" \

@@ -52,6 +52,29 @@ edgetpu:
 - Google Coral EdgeTPU PCIe (dual TPU card)
 - Tested with `/dev/apex_0` and `/dev/apex_1`
 
+## Unraid Community Applications
+
+Install via Community Applications (search "Viseron PCIe Coral") or use the template:
+
+```bash
+# Template URL for manual install
+https://raw.githubusercontent.com/syscod3/viseron-coral-pcie/main/unraid-template.xml
+```
+
+The template configures:
+- Config directory (`/config`)
+- Segments directory (`/segments`)
+- PCIe Coral devices (`/dev/apex_0`, `/dev/apex_1`)
+- Web UI port (8888), RTSP (8554), WebRTC (8555)
+- Viseron base image version
+
+### CA Submission
+
+To add to Community Applications:
+1. Fork [docker-templates](https://github.com/Sparklyballs/docker-templates)
+2. Add `unraid-template.xml` to appropriate folder
+3. Submit PR to [CA repo](https://github.com/Sparklyballs/docker-templates)
+
 ## Building
 
 ### Local

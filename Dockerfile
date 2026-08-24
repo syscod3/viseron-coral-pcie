@@ -13,10 +13,10 @@ FROM alpine:3.20 AS firmware
 RUN apk add --no-cache curl
 
 # Coral PCIe firmware (from Google Coral releases)
-# Check https://coral.ai/docs/accelerator/get-started/ for latest
+# Firmware is included in libedgetpu1-max package, but we can also fetch from releases
 ENV CORAL_FIRMWARE_VERSION=16.0
 RUN mkdir -p /firmware && \
-    curl -fsSL "https://github.com/google-coral/edgetpu/raw/master/edgetpu_firmware.bin" \
+    curl -fsSL "https://github.com/google-coral/edgetpu/releases/download/v${CORAL_FIRMWARE_VERSION}/edgetpu_firmware.bin" \
     -o /firmware/edgetpu_firmware.bin && \
     chmod 644 /firmware/edgetpu_firmware.bin
 

@@ -1,0 +1,76 @@
+name: Check Upstream Viseron Updates
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Daily at 6 AM UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-upstream:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get latest Viseron release
+        id: viseron
+        run: |
+          LATEST=$(curl -s https://api.github.com/repos/roflcoopter/viseron/releases/latest | jq -r .tag_name)
+          echo "version=$LATEST" >> $GITHUB_OUTPUT
+          echo "Latest Viseron release: $LATEST"
+
+      - name: Get current Viseron version in Dockerfile
+        id: current
+        run: |
+          CURRENT=$(grep 'ARG VISERON_VERSION=' Dockerfile | head -1 | cut -d= -f2)
+          echo "version=$CURRENT" >> $GITHUB_OUTPUT
+          echo "Current Viseron version: $CURRENT"
+
+      - name: Check if update needed
+        id: compare
+        run: |
+          if [ "${{ steps.viseron.outputs.version }}" != "${{ steps.current.outputs.version }}" ]; then
+            echo "update_needed=true" >> $GITHUB_OUTPUT
+            echo "new_version=${{ steps.viseron.outputs.version }}" >> $GITHUB_OUTPUT
+            echo "Update needed: ${{ steps.current.outputs.version }} -> ${{ steps.viseron.outputs.version }}"
+          else
+            echo "update_needed=false" >> $GITHUB_OUTPUT
+            echo "Already up to date: ${{ steps.current.outputs.version }}"
+          fi
+
+      - name: Update Dockerfile
+        if: steps.compare.outputs.update_needed == 'true'
+        run: |
+          sed -i "s/ARG VISERON_VERSION=.*/ARG VISERON_VERSION=${{ steps.compare.outputs.new_version }}/" Dockerfile
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add Dockerfile
+          git commit -m "chore: update Viseron base to ${{ steps.compare.outputs.new_version }}"
+          git push
+          echo "Dockerfile updated and pushed"
+
+      - name: Create Pull Request
+        if: steps.compare.outputs.update_needed == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update Viseron base to ${{ steps.compare.outputs.new_version }}"
+          title: "chore: update Viseron base to ${{ steps.compare.outputs.new_version }}"
+          body: |
+            Automated update from upstream Viseron release.
+            
+            **Changes:**
+            - Viseron base image: `${{ steps.current.outputs.version }}` → `${{ steps.compare.outputs.new_version }}`
+            
+            This PR was created automatically by the upstream sync workflow.
+          branch: update/viseron-${{ steps.compare.outputs.new_version }}
+          delete-branch: true
+          labels: |
+            dependencies
+            automated

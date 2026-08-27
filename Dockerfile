@@ -3,7 +3,7 @@
 # Extends the official Viseron image with PCIe Coral firmware and drivers
 # for Google Coral EdgeTPU PCIe accelerator cards.
 
-ARG VISERON_VERSION=v3.6.0
+ARG VISERON_VERSION=v3.6.1
 FROM roflcoopter/viseron:${VISERON_VERSION}
 
 # Ensure libedgetpu1-max is installed (includes PCIe kernel module + firmware)

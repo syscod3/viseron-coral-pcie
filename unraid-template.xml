@@ -19,6 +19,7 @@
   <Config Name="DEVICE_0" Target="/dev/apex_0" Display="Coral EdgeTPU PCIe Device 0" Required="false" Mode="rw" Description="First Coral EdgeTPU PCIe device (/dev/apex_0)" Type="device" Default="/dev/apex_0"/>
   <Config Name="DEVICE_1" Target="/dev/apex_1" Display="Coral EdgeTPU PCIe Device 1" Required="false" Mode="rw" Description="Second Coral EdgeTPU PCIe device (/dev/apex_1)" Type="device" Default="/dev/apex_1"/>
   <Config Name="VIDEO_PORT" Target="8888" Display="Web UI Port" Required="true" Mode="tcp" Description="Viseron web interface port" Type="port" Default="8888"/>
+  <Config Name="METRICS_PORT" Target="9090" Display="Autotrack Metrics Port" Required="false" Mode="tcp" Description="Prometheus autotrack metrics endpoint (scraped by Alloy via host gateway)" Type="port" Default="9090"/>
   <Config Name="RTSP_PORT" Target="8554" Display="RTSP Port" Required="false" Mode="tcp" Description="go2rtc RTSP port" Type="port" Default="8554"/>
   <Config Name="WEBRTC_PORT" Target="8555" Display="WebRTC Port" Required="false" Mode="tcp" Description="go2rtc WebRTC port" Type="port" Default="8555"/>
   <Config Name="VISERON_VERSION" Target="latest-amd64" Display="Viseron Base Version" Required="false" Mode="" Description="Viseron base image version to use" Type="text" Default="latest-amd64"/>
